@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Streaming with Mac</title>
+    <meta name="description" content="Live streaming on Mac can be a bit of a pain, but with some effort, it's possible to get a good enough (trademark) experience. This post covers how to use Soundflower and some scripts I've written to add functionality to OBS that isn't available to Mac users by default.">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .metadata {
+            margin-bottom: 2em;
+            color: #666;
+        }
+        .tags {
+            margin-top: 1em;
+        }
+        .tag {
+            background: #f0f0f0;
+            padding: 0.2em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5em;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5em 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2d3748;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            border-left: 4px solid #e2e8f0;
+            margin: 1.5em 0;
+            padding-left: 1em;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>Live Streaming with Mac</h1>
+        <div class="metadata">
+            <div>April 17, 2018</div>
+            <div class="tags">
+                <span class="tag">Productivity</span> <span class="tag">Live Streaming</span>
+            </div>
+        </div>
+        <div class="content">
+            <p>I recently started live streaming my studying using Mac and Open Broadcaster Software (OBS)</p>
+<p>In this blog post, I want to talk about how I use OBS and other tools to create an effective and engaging live streaming experience.</p>
+<p>Live streaming your computer screen has historically had a gaming connotation. Because of this, most streaming tools have been focused on the Windows operating system. This has left a giant void in support of Mac and Linux. That, coupled with system restrictions that Mac enforces makes it hard to have an engaging and feature rich live streaming experience.</p>
+<p>However, with enough effort, it’s possible to get good enough (trademark) experience using a Mac.</p>
+<h2>Sound</h2>
+<p>Capturing system sound on Mac is not a trivial process. There are security restrictions in place to make it impossible for applications to capture system sound. However, there are special applications that one can allow access to system sound.</p>
+<p>One of these that is pretty okay is SoundflowerBed. You can download it <a href="https://github.com/mattingalls/Soundflower">here</a>. Once you install it, you need to route your audio to it.</p>
+<p>Go to your Mac's Audio MIDI Setup and create a new MIDI Output Device. Check both Soundflower and Built-in output.</p>
+<p>After that, you can configure OBS to listen from Soundflower by creating a new Mic Input and</p>
+<p><img alt="" src="/static/images/obs/select_audio_input_capture.png" /></p>
+<p><img alt="" src="/static/images/obs/new_audio_capture.png" /></p>
+<p><img alt="" src="/static/images/obs/soundflower_select.png" /></p>
+<h2>Plugins</h2>
+<p>Unfortunately, most plugins made for OBS are made primarily for Windows.</p>
+<p>I have created a <a href="https://github.com/ColdSauce/Mac-OBS-Tools">Github Repo</a> where I have built some scripts to add functionality on top of OBS if you have a Mac. This type of functionality was only available to Windows users before.</p>
+<p>To use one of these plugins, run the script you wish to use. For example, I'm going to run the <code>count_remaining.py</code> file.</p>
+<p>To do this, first I run</p>
+<p><code>python count_remaining.py "Apr 28 2018 4:45PM"</code></p>
+<p>Now a new file will be created in the directory where I ran my script called <code>time_remaining.py</code></p>
+<p>Now I can go into OBS and create a new module to put on my stream. The module type I was is a <code>Text</code> type.</p>
+<p><img alt="" src="/static/images/obs/select_text.png" /></p>
+<p>This will take me to a new window where I can chose the properties of this text.</p>
+<p><img alt="" src="/static/images/obs/read_from_file.png" /></p>
+<p>In the properties, I select <code>Read from file</code> and specify the <code>time_remaining.txt</code> file that my script wrote.</p>
+<h2>Improvements</h2>
+<p>There are still a lot of things that need to be improved in the overall grand scheme of things.</p>
+<p>The biggest being the lack of plugins. Whenever I find a need for a plugin, I write a Python script to do what I want and I put it on that repo. If you'd like to help out, please feel free to submit a pull-request and I'll merge it if it's good!</p>
+<p>SoundflowerBed isn't the greatest piece of software created, and there are still a lot of bugs in it. If you are so inclined, please either report these bugs to the Github Repo or try to fix them and push your changes upstream, it would help everyone out.</p>
+<p>When it comes down to it, Mac isn't the dominant operating system for OBS so not all of the great functionality will be there. However, with some of these free tools, hopefully your experience got a whole lot better.</p>
+        </div>
+    </article>
+</body>
+</html>

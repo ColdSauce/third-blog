@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Hacker Tools -- Git</title>
+    <meta name="description" content="This blog post series' goal is to provide a comprehensive list of tools I use and how to set them up. In this post, we'll focus on Git and some of the basic and advanced commands that can help improve your productivity.">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .metadata {
+            margin-bottom: 2em;
+            color: #666;
+        }
+        .tags {
+            margin-top: 1em;
+        }
+        .tag {
+            background: #f0f0f0;
+            padding: 0.2em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5em;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5em 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2d3748;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            border-left: 4px solid #e2e8f0;
+            margin: 1.5em 0;
+            padding-left: 1em;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>Cool Hacker Tools -- Git</h1>
+        <div class="metadata">
+            <div>April 08, 2018</div>
+            <div class="tags">
+                <span class="tag">Productivity</span>
+            </div>
+        </div>
+        <div class="content">
+            <p>This blog post series’ goal is to provide a comprehensive list of tools I use and how to set them up.</p>
+<p>When I first started programming, I was so curious to try the coolest gadgets and try new editors, window managers, and programming languages. This blog post’s goal is to try to share as much information that I have with you, either a complete beginner, looking to increase your productivity and to make your stuff look really cool, or an experienced developer looking to add a few tools to your arsenal.</p>
+<h1>Git</h1>
+<p>A lot of blog posts about Git talk about the internals of the tool and really low level stuff. They talk about how <code>pull</code> is actually a fancy <code>fetch</code> and <code>merge</code>, etc. While I think it's really cool how everything is implemented and that everyone should look at their <code>.git</code> directory, I want to talk about something that will have a high impact in improving a person's productivity while they are working with Git.</p>
+<p>I'm going to talk about the different commands I use every day.</p>
+<h2>Basic Commands</h2>
+<p>The basic workflow looks something like this</p>
+<p><img alt="workflow" src="/static/images/git_workflow.png" /></p>
+<p>When creating a change, the typical workflow is something like this:</p>
+<pre><code>git status # to see all files changed
+
+git add &lt;some file name&gt; # to add a specific file
+
+git add -A # to add all the files that were changed
+
+git commit -m &quot;Update README to have formatting info.&quot;
+  # This takes the files you've added and tells Git
+  # that you want them and their changes to be
+  # recorded in the history of the project
+
+git push origin master
+  # origin here is some remote repository
+  # master refers to the branch to push to
+
+</code></pre>
+<p>When taking a change from someone, the typical workflow is like this:</p>
+<pre><code>git pull origin master
+  # origin here is some remote repository
+  # master refers to the branch to push to
+
+# Here is where one would see that there were some
+# merge conflicts in their code.
+
+vim &lt;file_where_there_was_merge_conflict.x&gt;
+  # While in Vim, I search for &lt;&lt;&lt;
+  # Once I fix one, I do `n` to go to the next conflict
+
+# I continue to go through all the files with merge conflicts
+# and update them.
+
+git add -A
+git commit -m &quot;Fix merge conflicts.&quot;
+</code></pre>
+<p>If you want to see who wrote things in a file, you can do</p>
+<p><code>git blame &lt;file name&gt;</code></p>
+<p>If you want to see the log of all the commits</p>
+<p><code>git log</code></p>
+<p>If you want to go to a new branch</p>
+<p><code>git checkout -b &lt;branch name&gt;</code></p>
+<p>If you watch to switch to another branch</p>
+<p><code>git checkout &lt;branch name&gt;</code></p>
+<p>If you want to switch back to the branch you were previously in</p>
+<p><code>git checkout -</code></p>
+<p>If you want to delete a branch</p>
+<p><code>git branch -d &lt;branch name&gt;</code></p>
+<p>To see what remotes you have registered in your Git repo</p>
+<p><code>git remote -v</code></p>
+<p>To add a remote</p>
+<p><code>git remote add &lt;remote name&gt; &lt;url&gt;</code></p>
+<p>To remove one,</p>
+<p><code>git remote remove &lt;remote name&gt;</code></p>
+<p>For the first year of using Git, this is basically how my workflow was. If I needed to do something more advanced, I would just Google it and try it but that was rare.</p>
+<p>After doing a lot of other internships where I worked with several people on the same projects, I was challenged to improve my Git skills. I learned about more advanced workflows and tools that Git provides.</p>
+<h2>Advanced Commands</h2>
+<p>One of the things I was always really scared of was a <code>git rebase</code>. I thought that it would delete all my changes so I never bothered to work with it. However, this past fall, I was required to rebase extensively since merge commits looked bad in the history and because I was using Phabricator and the <code>arc diff</code> tool to create differential revisions as part of code review. This usually works best with having just one commit per diff. <a href="https://medium.com/@kurtisnusbaum/stacked-diffs-keeping-phabricator-diffs-small-d9964f4dcfa6">Here</a> is a really good blog post about one advantage with rebasing and keeping one commit per diff. The same applies to Github's notion of pull requests.</p>
+<p><strong>Git rebase</strong></p>
+<p>There are several ways I use <code>git rebase</code></p>
+<ul>
+<li>Squash commits</li>
+<li>Modify some commit in history</li>
+<li>Change a commit message</li>
+<li>Remove a commit from history</li>
+<li>Re-ordering commits around</li>
+</ul>
+<p>All these are actually really easy to do, and actually breaking your Git repo is really rare. If you want to try something out, I recommend just copying your project directory and playing around with the copy. That way, if you mess something up, it won't actually delete code you have written.</p>
+<p><code>git rebase -i</code> is where I start. <code>-i</code> tells the rebase command that you want this to be an interactive session and you want to chose how you want to rebase.</p>
+<p>After the <code>-i</code>, you need to specify where you want the rebase to start. With this, you need to provide a Git commit hash. You can use <code>git log</code> to find your commits and their hashes and copy them. However, in my typical workflow, I just do the following: <code>git rebase -i HEAD~~~</code></p>
+<p>By doing <code>HEAD~~~</code> you are telling Git that you want the commit hash 3 commits behind HEAD which is where you are currently at. Now you will get a screen that looks something like this.</p>
+<p><img alt="rebase" src="/static/images/rebase_workflow.png" />
+<em>These commits are presented in reverse-chronological order.</em></p>
+<p>The following are commands I use every day when rebasing:</p>
+<p><code>p</code> is the most basic one. This just means that you want to keep the commit as it is and not change it at all.</p>
+<p><code>e</code> allows you to go back inside a commit and change some files around. Then you can do <code>git commit —amend</code> and it will change the commit in place in the history as though it was always like how you edited it.</p>
+<p><code>s</code> combines the previous commit with the commit you want to squash. This is useful if you have a bunch of commits but are ready for code review and want to consolidate them to one commit.</p>
+<p><code>f</code> is the same as <code>s</code> but the difference is that it doesn't combine all of the commits' messages together like <code>s</code> does. This is useful for when you are in your own branch doing some <code>WIP</code> stuff and are commiting changes. Once your work in progress is finished, you can just <code>f</code> all of the <code>WIP</code> commits and create one commit out of all of them.</p>
+<p>The other commands are ones that I use very rarely. There is a use case for them but I don't find a need for them in my daily routine.</p>
+<p><strong>Adding files</strong></p>
+<p>When you're making a big change to a file, it's a bit annoying to context switch and commit all the time when you have one sub task complete. I've found this to be the biggest reason as to why my commits were terrible. I was lazy and didn't want to commit whenever I made a specific change. I wanted to commit at the end and group commits in a logical way at the very end. It made more sense to me.</p>
+<p>I found out about two commands that changed my life forever. These two commands allow you to selectively chose what you want to add within a file instead of adding the entire file.</p>
+<p><code>git add -p &lt;file name&gt;</code></p>
+<p>This command is git's add patch command. It intelligently groups pieces of the file and asks if you would like to add them to staging. If it's too big of a grouping, you can press <code>s</code> and it will split the grouped chunk and you can work from there.</p>
+<p>If this doesn't work for you, you can use another tool that is equally as good.</p>
+<p><code>git add -e &lt;file name&gt;</code></p>
+<p>The git add edit command opens up a diff of the file in your default editor and you can chose which lines in the diff you would like to add. This way, you only add what you want for the particular commit.</p>
+<h2>Code Review Convention</h2>
+<p>When working with other people, there seems to be 2 conventions to submitting code for review.</p>
+<p>The first is to require everyone to keep a clone of a Git repo on their computers pointing to their own remote repo. This is the same thing as the concept of forking in Github. There is one central remote repo and everyone submits pull requests or diffs to it from their remote repos.</p>
+<p>The second is to have everyone only use the central remote repo. People create new branches with the following convention <code>@&lt;username&gt;/some-feature</code> and push their code to that branch. They can then submit a PR with that branch as the compare branch against the master branch.</p>
+<p>This is a matter of personal preference. There are good and bad things to each of these. It all depends on what you want.</p>
+<p>Code to be reviewed should be as small as possible. See the linked post on Stacked Diffs to find out more on how to do this.</p>
+<h2>Commit Messages</h2>
+<p>Check out <a href="https://chris.beams.io/posts/git-commit/">this</a> blog post about writing good commit messages.</p>
+<p><strong>Tl;dr: Make your commit messages short and to the point and use the imperative mood in the subject line.</strong></p>
+<p><code>Added a bunch of different tools to get this dumb thing to work.</code></p>
+<p>is much worse than</p>
+<p><code>Add Babel support for browser</code></p>
+<p>I don't think you should start writing summarizes of your changes, etc, like the blog post talks about. Long summaries, in my opinion, should be independent of Git itself if you're using things like Github or Phabricator. However, if you're working on a project where you don't have a system to track these things, long commit messages work fine.</p>
+<hr />
+<p>Please let me know of any cool Git commands that I missed here by emailing me or Tweeting at me!</p>
+<p>:wq</p>
+        </div>
+    </article>
+</body>
+</html>

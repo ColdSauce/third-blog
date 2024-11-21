@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Censorship Resistance or: How I Stopped Worrying and Learned to Rendezvous</title>
+    <meta name="description" content="Do you want to learn how to stop worrying and learn to rendezvous? This post is about my thoughts on rendezvous protocols and how they can be used to connect to networks in hostile conditions.">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .metadata {
+            margin-bottom: 2em;
+            color: #666;
+        }
+        .tags {
+            margin-top: 1em;
+        }
+        .tag {
+            background: #f0f0f0;
+            padding: 0.2em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5em;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5em 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2d3748;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            border-left: 4px solid #e2e8f0;
+            margin: 1.5em 0;
+            padding-left: 1em;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>Censorship Resistance or: How I Stopped Worrying and Learned to Rendezvous</h1>
+        <div class="metadata">
+            <div>April 08, 2018</div>
+            <div class="tags">
+                <span class="tag">Censorship</span>
+            </div>
+        </div>
+        <div class="content">
+            <p>This post is about my thoughts on rendezvous protocols.</p>
+<p>Before you enter a house, you need to find a door. Before you join a network, you need to find an IP address. For the internet, we have things like domain names and DNS that translate website URLs we found on search engines into IP addresses which act as the doors to join a network. This is what a rendezvous is. A way for your computer to find another computer to connect to in order to join a network.</p>
+<p>In normal conditions, DNS is fine to use as a rendezvous protocol. It is simple and decentralized. There is great tooling for it, and the entire world supports it. <a href="http://awesome.datproject.org/dns-discovery">DNS is even used</a> in decentralized and distributed network scenarios. However, things start changing when trying to gain access a blocked network in a censored region.</p>
+<p>Even though DNS is decentralized, default DNS resolvers such as an ISP can block requests for censored domain names. This means that if you request the IP address for "google.com," the censor will give you back an incorrect IP address or not IP address at all. There are several ways to tackle this issue.</p>
+<p>The most basic solution is to use another DNS resolver that doesn't block the DNS queries to censored sites. The issue with this is that DNS queries to those resolvers can be blocked in the IP layer. Even if they aren't being blocked, getting the IP address of another DNS resolver alone is an issue of rendezvous.</p>
+<p>It seems to me that DNS infrastructure alone isn't well suited for rendezvous in hostile conditions.</p>
+<p><img alt="turkey dns" src="/static/images/turkey_dns.png" />
+<em>People spray painted Google's DNS Resolver IP Address used in Turkey when the government started censoring the internet via DNS</em></p>
+<p>Before looking at specific solutions, it's important to look at the types of solutions that work well in the real world.
+To do this, it's important to look at things through an economic perspective and a practicality perspective.</p>
+<h2>Economic Perspective</h2>
+<p>The best way to tackle censorship isn't through a technological perspective but rather through an economic perspective. The internet is a global network of nodes. Some nodes are very important economically to a nation-state and can't be censored.</p>
+<p>For example, take Amazon. Amazon's AWS network operates throughout the entire world. Governments can't censor Amazon's IP addresses because that would be a catastrophic blow to their economy. (<a href="https://torrentfreak.com/russia-asked-isps-to-block-13-5-million-amazon-ip-addresses-to-silence-one-app-180331/">This has been challenged recently with Russia blocking 13.5 million Amazon IPs</a>)</p>
+<p>Leveraging economic disincentives combined with technological cleverness is the best way to develop censorship resistance.</p>
+<p>Since the government operating the censored region gains massive economic incentives from keeping that company's websites un-censored, one can use that to their advantage and host a rendezvous system within it.</p>
+<p>There are several censorship resistant systems that incorporate this idea. The largest one is <a href="https://trac.torproject.org/projects/tor/wiki/doc/meek">meek</a>. It allows users to connect to a Tor node via a technique known as domain fronting. You can read more about Domain Fronting <a href="http://www.icir.org/vern/papers/meek-PETS-2015.pdf">here</a>.</p>
+<p>Domain fronting leverages the fact that censors can't reasonably block certain CDNs because that would hurt a lot of businesses in the region, and it would be detrimental more than it would be beneficial.</p>
+<h2>Practicality Perspective</h2>
+<p>There is a common saying in dissident elementary school children.</p>
+<blockquote>
+<p>They can't throw us all in detention!</p>
+</blockquote>
+<p>The children bring up an argument in practicality. It would be highly impractical to have every child go to detention because of an action all of them took.</p>
+<p>The same is true for censors and censorship resistance networks. However, one must think in an incredibly large scale. Creating proxy networks large enough to withstand nation-state interference is very costly and resource intensive. Operating that many servers is not feasible.</p>
+<p>That is, unless you're not using your own computers.</p>
+<p>There have been several projects that have aimed at using other people's computers in clever ways to proxy data to and from Tor. My favorite one is "OSS: Using Online Scanning Services for Censorship Circumvention." You can read the paper <a href="http://crypto.stanford.edu/~dabo/papers/redirects.pdf">here</a>. The basic idea is that they use scanning services freely available on the internet as a way to proxy the connection of two peers. An example they give is the website <code>PDFmyURL</code>.</p>
+<p>Users provide this website a URL, and the website gives them back a PDF view of the URL's contents. They used this to proxy requests from one person to another in a really clever way. Alice initiates the connection by giving <code>PDFmyURL</code> a URL to Bob, the person they wish to connect to, along with some information in the URL such as Alice's IP address.</p>
+<p><code>PDFmyURL</code> will send an HTTP GET request to Bob's server. Bob will reply with a HTTP status code 302 (temporary redirect) response and request that <code>PDFmyURL</code> redirects the request to Alice's IP address. However, he also includes data inside the URL via URL parameters.</p>
+<p>Once Alice gets the redirect, she can redirect back to Bob by sending back a 302 redirect HTTP response to <code>PDFmyURL</code> with a URL to Bob along with some information she wants to send back to Bob.</p>
+<p>This is repeated until the session finishes.</p>
+<p>The other one that I really like is Flash Proxy. You can read the original paper <a href="https://crypto.stanford.edu/flashproxy/flashproxy.pdf">here</a>. Flash proxy creates abundant short lived proxies. A business can place an "interent freedom" badge on their site and the website's visitors run a piece of Javascript that converts their browsers into proxies to a Tor relay node. This project has been deprecated but there is now a new project called <a href="https://github.com/keroserene/snowflake">Snowflake</a> which is doing the same thing using WebRTC.</p>
+<h2>Issues</h2>
+<p>In rendezvous, one of the most worrying issues is trust. How can one make sure that the network they are connecting to is the actual network they want to connect to? How can they make sure the user who wants to rendezvous is actually legitimate?</p>
+<p>How can you set up a rendezvous scheme where most things are blocked and the censor doesn't care about economic penalties?</p>
+<p>How do you prevent DOS attacks?</p>
+<p>How do you make it harder for censors to track rendezvous points?</p>
+<hr />
+<p>Please let me know what you think about these ideas by emailing me or Tweeting at me!</p>
+<p>:wq</p>
+        </div>
+    </article>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Scala Case Classes and Companion Objects</title>
+    <meta name="description" content="On Scala case classes and companion objects: Structuring your code in terms of case classes and companion objects is a great way to easily decouple your data and allow people to easily use it.">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .metadata {
+            margin-bottom: 2em;
+            color: #666;
+        }
+        .tags {
+            margin-top: 1em;
+        }
+        .tag {
+            background: #f0f0f0;
+            padding: 0.2em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5em;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5em 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2d3748;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            border-left: 4px solid #e2e8f0;
+            margin: 1.5em 0;
+            padding-left: 1em;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>On Scala Case Classes and Companion Objects</h1>
+        <div class="metadata">
+            <div>September 08, 2016</div>
+            <div class="tags">
+                <span class="tag">Scala</span>
+            </div>
+        </div>
+        <div class="content">
+            <p>Structuring your code in terms of case classes and companion objects is a great way to easily decouple your data and allow people to easily use it.</p>
+<p>Here’s an example of where case classes are incredibly useful. Let’s say we want to solve an algorithm question. Knowing how this algorithm works isn’t really necessary to understand the concepts of this blog post but I just wanted to show how the abstraction works.</p>
+<p>A shifted array is a sorted array that was shifted <code>n</code> number of times to the right. So <code>[1,2,3,4,5]</code> shifted 3 to the right would become <code>[3,4,5,1,2]</code>, <code>[2,3,4]</code> shifted to the right 1 time would become <code>[4,2,3]</code>, etc, etc. We need to write a function, <code>getIndexOf(n: Int)</code> that returns the index at which a number is located.</p>
+<p>Let’s think about this in terms of abstraction. The end user shouldn’t know what’s going on behind the scenes to use this ShiftedArray data structure. She should just be able to call <code>getIndexOf(3)</code> on the data structure and it should just work. No need to worry about start indices, end indices, binary search, none of that. The end user doesn’t care. It’s just more needless stuff for them to think about.</p>
+<p>How do we easily represent the ShiftedArray data structure? Case classes, of course!</p>
+<pre><code>case class ShiftedArray(vector: Vector[Int])
+</code></pre>
+<p>If you think about it, it makes sense. A shifted array’s internal data structure is a vector. We are just abstracting on top of it.</p>
+<p>Now let’s say we have a regular sorted vector that we want to make a shifted array from with a rotated index. We can use a factory-like pattern with ShiftedArray’s companion object!</p>
+<pre><code>object ShiftedArray {
+    def makeFromVector(vector: Vector[Int], amountShift: Int): ShiftedArray = {
+        val splitArray = vector.splitAt(amountShift - 1)
+        ShiftedArray(splitArray._2 ++ splitArray._1)
+}
+</code></pre>
+<p>Now the end user can do the following:</p>
+<pre><code>val superCoolVector = Vector(2,3,4,5,6,7)
+val amountToShift = 4
+val shiftedArray = ShiftedArray.makeFromVector(superCoolVector, amountToShift)
+</code></pre>
+<p>Companion object functions are useful when one isn’t targeting a specific instance of an object but rather the idea of the object. For instance, <code>makeFromVector</code> did not require any specific instance of a ShiftedArray but rather it just fit in the object because it fit in with the idea of ShiftedArray we had.</p>
+<p>This abstracts away the creation of the ShiftedArray. Now let’s look at how we can abstract away the idea of getting the index of a certain value.</p>
+<p>If one wants to focus on a specific instance of a ShiftedArray, they would use case class functions to do that. Let’s try it out.</p>
+<pre><code>case class ShiftedArray(vector: Vector[Int]) {
+  def getIndexOf(t: Int): Option[Int] = {
+    val firstRotation = getFirstRotation(t)
+    val twoSortedVectors = vector.splitAt(firstRotation)
+    search(twoSortedVectors._1, t) orElse
+    search(twoSortedVectors._2, t).map {
+      index =&gt; index + twoSortedVectors._1.length
+    }
+  }
+  private def binarySearch(vec: Vector[Int], lookingFor: Int, start: Int, end: Int): Option[Int] = {
+    if(start &gt; end) {
+      return None
+    }
+    val mid = (start + end) / 2
+    val midValue = vec(mid)
+    if(midValue == lookingFor) {
+      Some(mid)
+    } else if(midValue &lt; lookingFor) {
+      binarySearch(vec, lookingFor, mid + 1, end)
+    } else {
+      binarySearch(vec, lookingFor, start, mid - 1)
+    }
+  }
+  private def search(vec: Vector[Int], lookingFor: Int): Option[Int] = {
+    binarySearch(vec, lookingFor, 0, vec.length)
+  }
+  private def getFirstRotation(lookingFor: Int): Int = {
+    getFirstRotation(lookingFor, 0, vector.length)
+  }
+  private def getFirstRotation(lookingFor: Int, start: Int, end: Int): Int = {
+    val mid = (start + end) / 2
+    if(mid == 0) {
+      mid
+    } else if(vector(mid - 1) &gt; vector(mid)) {
+      mid
+    } else if(vector(0) &gt; vector(mid)){
+      getFirstRotation(lookingFor, start, mid)
+    } else {
+      getFirstRotation(lookingFor, mid + 1, end)
+    }
+  }
+}
+</code></pre>
+<p>All of these functions pertain to a specific index of the ShiftedArray. They all deal with the internal vector data structure. This is the reason they are in the case class and not in the companion object!</p>
+<p>Now all the user of this ShiftedArray data structure has to do is the following:</p>
+<pre><code>val shiftedArray = ShiftedArray.makeFromVector(someVector, someRotation)
+val index = shiftedArray.getIndexOf(someNumber)
+</code></pre>
+<p>This is a really versatile way of structuring your code. It allows you to easily create your code as though you were writing a library and it allows people to reason about your code a lot easier.</p>
+<p>As with anything, there are times where you should use this design pattern and when you shouldn’t. Ultimately it’s up to you to decide whether this is useful for what you’re working on.</p>
+        </div>
+    </article>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shorteners as a Data Store</title>
+    <meta name="description" content="Do you love storing data but don't want to deal with the hassle of setting up a server? URL shorteners are a great way to store data! In this blog post, I will show you how to store data in any URL shortening service on the internet.">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .metadata {
+            margin-bottom: 2em;
+            color: #666;
+        }
+        .tags {
+            margin-top: 1em;
+        }
+        .tag {
+            background: #f0f0f0;
+            padding: 0.2em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5em;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5em 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2d3748;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            border-left: 4px solid #e2e8f0;
+            margin: 1.5em 0;
+            padding-left: 1em;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>URL Shorteners as a Data Store</h1>
+        <div class="metadata">
+            <div>August 12, 2017</div>
+            <div class="tags">
+                <span class="tag">Project</span>
+            </div>
+        </div>
+        <div class="content">
+            <p>Because why not?</p>
+<p><a href="https://github.com/ColdSauce/ShortDataStorage">GitHub repo</a></p>
+<p>In this blog post, I’m going to be talking about a proof of concept I created for a way to store data in any URL shortening service on the internet.</p>
+<p>I have been thinking of paradigms revolving around data. How data is stored, how it’s transfered, and how it’s consumed. I tried to do a couple of experiments in the storage aspect to see if I could come up with some new cool way of storing data.</p>
+<h2>The Original Idea</h2>
+<p>The original idea I had was creating a “platform” that is just simply a webite that takes whatever HTML is in the current URL, and shows it to anyone going to that URL.</p>
+<p>For example, when one examines <a href="https://coldsauce.github.io/url-is-the-new-cloud/?html=%3Chtml%3E%3Cbody%3Ewith+the+html+stored+in+the+URL%2C+no+domains+can+be+seized+and+no+web+servers+can+be+shut+down.+It%27s+distributed.+%3C%2Fbody%3E+%3C%2Fhtml%3E">this website</a>, they will see that none of these words and none of this HTML was ever in the actual HTML of the website. It was loaded when the URL was clicked, client-side. This means that potentially, people can have whole websites that are not hosted anywhere which are shared via messaging channels which are completely free to use. If one combines this with some existing peer to peer technologies, there could be entire websites that are hosted all through messaging apps.</p>
+<p>But then I thought, what if someone shortens the URL. That relies on a centralized service and ultimately it’s no different than just having a site hosted somewhere. But the idea sounded so cool so I did it anyways for fun.</p>
+<h2>Short Data Storage</h2>
+<p>A URL shortening service, in the most basic sense, is just a map from short URL to long URL and vice versa. Most URL shorteners don’t do anything to see if the URLs are actually real. This means that arbitrary data can be stored in the URLs and later retrieved.</p>
+<p>If you’d like to store data, you can pipe it to stdin to the program which will generate a short link when you have correctly hooked up the URL shortening service you would like to use.</p>
+<pre><code>cat somefile.html | python main.py
+</code></pre>
+<p>If you’d like to get data from a specific shortened URL, you can explicitly pass it in as a command line argument.</p>
+<pre><code>python main.py &lt;some shortened URL&gt; &gt; file_to_save_data_to.bin
+</code></pre>
+<p>To save data to a URL shortening service, this code encodes all the data in URL Safe Base64, splits it into batched chunks, calls the URL shortening service’s API with a url <code>http://&lt;the base 64 encoded chunk&gt;</code> which the URL shortening service takes in no problem. The service returns a shortened URL for the data. Then, all of these shortened URLS that were generated are compiled into a string that separates them with _ underscores. This string is then itself shortened and from that, one
+shortened URL is generated.</p>
+<p>The way to get the data back is basically the process just described but in reverse.</p>
+<p>I learned a bunch in working on this project — the biggest thing I learned was how HTTP redirection actually works. I never had to deal with it before but it’s actually super straightforward.</p>
+        </div>
+    </article>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparing Functional Languages</title>
+    <meta name="description" content="In this post, we compare the functional language Scala with Scheme. We look at how they both manipulate lists, with Scheme using predefined functions and Scala using pattern matching.">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .metadata {
+            margin-bottom: 2em;
+            color: #666;
+        }
+        .tags {
+            margin-top: 1em;
+        }
+        .tag {
+            background: #f0f0f0;
+            padding: 0.2em 0.6em;
+            border-radius: 3px;
+            margin-right: 0.5em;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 2em auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5em 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2d3748;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            border-left: 4px solid #e2e8f0;
+            margin: 1.5em 0;
+            padding-left: 1em;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>Comparing Functional Languages</h1>
+        <div class="metadata">
+            <div>April 07, 2017</div>
+            <div class="tags">
+                <span class="tag">Programming Languages</span>
+            </div>
+        </div>
+        <div class="content">
+            <p>I wrote this blog post about a year ago but finally got a chance to publish it.</p>
+<p>How many <code>::</code>’s does it take to screw in a light-bulb? A <code>car</code>’s worth.</p>
+<p>I’m currently in a class where we are using Scheme extensively. This has made me very used to the idea of structuring my algorithms using <code>car</code> and <code>cdr</code> for any sort of data manipulation.</p>
+<p><code>car</code> returns the head of a List while <code>cdr</code> returns the tail of List.</p>
+<p>Here is a simple implementation of a sum function to understand how <code>car</code> and <code>cdr</code> works.</p>
+<pre><code>(define (sum some-list)
+    (if (null? some-list) 0
+        (+ (car some-list) (sum (cdr some-list)))
+    )
+)
+</code></pre>
+<p>This is a structurally recursive approach in which we add the first element of each recursive step up until we have no more elements in the list, in which case we return a concrete 0.</p>
+<p>Having been doing Scheme for about 4 months, this is a very common pattern I see. It’s the construct that allows for the general idea of “iterating through a list” to function.</p>
+<p>What I wanted to do was compare this with another functional language, Scala, and see what the differences were.</p>
+<p>Scala is the best language I have ever written in. (Not true anymore :D, now it's Go) I have been using it for about a year and a half now and absolutely love it. Since both of the languages are considered functional, they share many similarities. However, I feel like Scala has many more abstractions that make things a lot easier.</p>
+<p>To mirror the above code, here is the same idea applied in Scala.</p>
+<pre><code>def sum(someList: List[Int]): Int = {
+    someList match {
+      case Nil =&gt; 0
+      case x :: xs =&gt; x + sum(xs)
+    }
+}
+</code></pre>
+<p>There is a very clear distinction between these two. Scala uses a concept known as pattern matching to get the head and tail of a List whereas Scheme uses predefined functions to do the same thing. What is interesting, though, is how both of these concepts are trying to do the same two things — wrangle with the structure of lists.</p>
+<p>:wq</p>
+        </div>
+    </article>
+</body>
+</html>
